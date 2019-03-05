@@ -12,12 +12,12 @@ pipeline {
         sh 'npm install'
       }
     }
-    stage('Test') {
+    stage('FT') {
       environment {
         CI = 'true'
       }
       steps {
-        sh './jenkins/scripts/test.sh'
+        echo 'Functional tests'
       }
     }
   }
