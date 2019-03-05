@@ -7,45 +7,24 @@ pipeline {
 
   }
   stages {
+    stage('Init') {
+      environment {
+        CI = 'true'
+      }
+      steps {
+        echo 'Functional tests'
+      }
+    }
     stage('Build') {
-      parallel {
-        stage('Build') {
-          steps {
-            sh 'npm install'
-          }
-        }
-        stage('SA') {
-          steps {
-            echo 'Static Analysis'
-          }
-        }
-      }
-    }
-    stage('FT') {
-      parallel {
-        stage('FT') {
-          environment {
-            CI = 'true'
-          }
-          steps {
-            echo 'Functional tests'
-          }
-        }
-        stage('UT') {
-          steps {
-            echo 'Unit Tests'
-          }
-        }
-        stage('VT') {
-          steps {
-            echo 'Valgrind tests'
-          }
-        }
-      }
-    }
-    stage('Release') {
       steps {
         echo 'Distribute to Bintray'
+      }
+    }
+    stage('Testing') {
+      steps {
+        build 'functional-test'
+        build 'unit-test'
+        build 'valgrind-test'
       }
     }
   }
