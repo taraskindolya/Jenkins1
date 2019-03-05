@@ -8,16 +8,44 @@ pipeline {
   }
   stages {
     stage('Build') {
-      steps {
-        sh 'npm install'
+      parallel {
+        stage('Build') {
+          steps {
+            sh 'npm install'
+          }
+        }
+        stage('SA') {
+          steps {
+            echo 'Static Analysis'
+          }
+        }
       }
     }
     stage('FT') {
-      environment {
-        CI = 'true'
+      parallel {
+        stage('FT') {
+          environment {
+            CI = 'true'
+          }
+          steps {
+            echo 'Functional tests'
+          }
+        }
+        stage('UT') {
+          steps {
+            echo 'Unit Tests'
+          }
+        }
+        stage('VT') {
+          steps {
+            echo 'Valgrind tests'
+          }
+        }
       }
+    }
+    stage('Release') {
       steps {
-        echo 'Functional tests'
+        echo 'Distribute to Bintray'
       }
     }
   }
