@@ -1,31 +1,44 @@
 pipeline {
   agent {
-    docker {
-      image 'node:6-alpine'
-      args '-p 3000:3000'
+    node {
+      label 'master_lable'
     }
+  }
+    stages {
+	 stage("Init") {
+         steps {
+            echo "1111111111"
+		 }
+	 }
+        stage("Release workflow") {
+            parallel {
+                   stage("Analysis") {
+                            steps {
+                                echo "444444444444"
+                            }
+                        }
+     
+                stage("Phase 1") {
+                    stages {
+                        stage("Build") {
+                            steps {
+                                echo "2222222222222"
+                            }
+                        }
+                        stage("Testing") {
+                            steps {
+                                echo "3333333333"
+									}
+								}
+                            }
+                        }
+                    }
+                }
 
-  }
-  stages {
-    stage('Init') {
-      environment {
-        CI = 'true'
-      }
-      steps {
-        echo 'Functional tests'
-      }
-    }
-    stage('Build') {
-      steps {
-        echo 'Distribute to Bintray'
-      }
-    }
-    stage('Testing') {
-      steps {
-        echo 'FT'
-        echo 'UT'
-        echo 'VT'
-      }
-    }
-  }
+	 stage("Release") {
+         steps {
+            echo "66666666666"
+		 }
+	  }
+   }
 }
